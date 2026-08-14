@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -61,8 +61,6 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
 
   const [completedQuests, setCompletedQuests] = useState([]);
   const [claimedRewards, setClaimedRewards] = useState([]);
-  
-  // Scratch card modal state
   const [activeScratchQuest, setActiveScratchQuest] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -84,8 +82,8 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
 
     try {
       const todayStr = new Date().toISOString().split('T')[0];
-      const todayIndex = (new Date().getDay() + 6) % 7; // Convert 0-6 Sun-Sat to 0-6 Mon-Sun
-      
+      const todayIndex = (new Date().getDay() + 6) % 7;
+
       const newHistory = [...streak.checkInHistory];
       newHistory[todayIndex] = true;
 
@@ -99,10 +97,8 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
       await saveStreak(newStreakData);
       setStreak(newStreakData);
       onTriggerConfetti();
-
-      // Complete quest or add XP
       const profile = await loadPortfolio();
-      profile.xp = (profile.xp || 0) + 20; // 20 XP for daily checkin
+      profile.xp = (profile.xp || 0) + 20;
       await savePortfolio(profile);
       if (onRefreshPortfolio) onRefreshPortfolio();
     } catch (e) {
@@ -122,21 +118,15 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
       const updatedClaimed = [...claimedRewards, activeScratchQuest.id];
       await saveClaimedRewards(updatedClaimed);
       setClaimedRewards(updatedClaimed);
-
-      // Award XP & cash value to portfolio
       const profile = await loadPortfolio();
       profile.xp = (profile.xp || 0) + activeScratchQuest.xp;
       profile.balance = (profile.balance || 0) + activeScratchQuest.cashReward;
-      
-      // Allocate cash reward to Mutual Funds (Stocks) or Cash
       profile.stocksAmount = (profile.stocksAmount || 0) + activeScratchQuest.cashReward;
-      
+
       await savePortfolio(profile);
-      
+
       onTriggerConfetti();
       if (onRefreshPortfolio) onRefreshPortfolio();
-
-      // Close modal after a short delay
       setTimeout(() => {
         setModalVisible(false);
         setActiveScratchQuest(null);
@@ -148,13 +138,10 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {/* Title Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Quests & Rewards</Text>
         <Text style={styles.subtitle}>Maintain your streak and claim compounding cards.</Text>
       </View>
-
-      {/* Streak Board Card */}
       <View style={styles.streakCard}>
         <View style={styles.streakHeader}>
           <View style={styles.flameContainer}>
@@ -178,8 +165,6 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
             </Text>
           </TouchableOpacity>
         </View>
-
-        {/* Days grid */}
         <View style={styles.daysGrid}>
           {DAYS_OF_WEEK.map((day, idx) => {
             const todayIndex = (new Date().getDay() + 6) % 7;
@@ -209,11 +194,9 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
           })}
         </View>
       </View>
-
-      {/* Quest Section */}
       <View style={styles.questSection}>
         <Text style={styles.sectionTitle}>Available Quests</Text>
-        
+
         {QUEST_LIST.map((quest) => {
           const isCompleted = completedQuests.includes(quest.id);
           const isClaimed = claimedRewards.includes(quest.id);
@@ -252,8 +235,6 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
           );
         })}
       </View>
-
-      {/* Scratch Card Modal Overlay */}
       <Modal
         animationType="fade"
         transparent={true}
@@ -281,7 +262,7 @@ export default function QuestsTab({ onTriggerConfetti, onRefreshPortfolio }) {
                 onScratchComplete={handleScratchComplete}
               />
             )}
-            
+
             <Text style={styles.scratchNotice}>
               Swipe your finger back and forth across the card
             </Text>

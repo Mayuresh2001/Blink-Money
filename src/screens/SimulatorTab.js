@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -24,7 +24,6 @@ export default function SimulatorTab({ onTriggerConfetti, onRefreshPortfolio }) 
   const [questCompleted, setQuestCompleted] = useState(false);
 
   useEffect(() => {
-    // Check if user already completed the simulation quest
     const checkQuest = async () => {
       const completed = await loadCompletedQuests();
       if (completed.includes('simulate_trial')) {
@@ -42,12 +41,11 @@ export default function SimulatorTab({ onTriggerConfetti, onRefreshPortfolio }) 
       if (!completed.includes('simulate_trial')) {
         const updated = [...completed, 'simulate_trial'];
         await saveCompletedQuests(updated);
-        
-        // Award 50 XP
+
         const profile = await loadPortfolio();
         profile.xp = (profile.xp || 0) + 50;
         await savePortfolio(profile);
-        
+
         setQuestCompleted(true);
         onTriggerConfetti();
         if (onRefreshPortfolio) onRefreshPortfolio();
@@ -59,25 +57,20 @@ export default function SimulatorTab({ onTriggerConfetti, onRefreshPortfolio }) 
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {/* Title Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Blink Loop</Text>
         <Text style={styles.subtitle}>Interact with the nodes to see how wealth flows.</Text>
       </View>
 
-      {/* Interactive Loop Diagram */}
       <InteractiveLoop activeNodeId={activeNodeId} onSelectNode={setActiveNodeId} />
 
       <View style={styles.sectionDivider} />
-
-      {/* Simulator Inputs Section */}
       <View style={styles.simulatorCard}>
         <View style={styles.simHeader}>
           <Text style={styles.simTitle}>Liquid Wealth Simulator</Text>
           <Text style={styles.simSubtitle}>Compare borrowing against your assets vs selling them.</Text>
         </View>
 
-        {/* SIP Selector Row */}
         <View style={styles.inputWrapper}>
           <View style={styles.inputLabelRow}>
             <Text style={styles.inputLabel}>Daily SIP Contribution</Text>
@@ -101,8 +94,6 @@ export default function SimulatorTab({ onTriggerConfetti, onRefreshPortfolio }) 
             ))}
           </View>
         </View>
-
-        {/* Borrow Selector Row */}
         <View style={styles.inputWrapper}>
           <View style={styles.inputLabelRow}>
             <Text style={styles.inputLabel}>Emergency / Borrow Amount</Text>
@@ -126,8 +117,6 @@ export default function SimulatorTab({ onTriggerConfetti, onRefreshPortfolio }) 
             ))}
           </View>
         </View>
-
-        {/* Years Selector Row */}
         <View style={styles.inputWrapper}>
           <View style={styles.inputLabelRow}>
             <Text style={styles.inputLabel}>Compounding Period</Text>
@@ -152,11 +141,7 @@ export default function SimulatorTab({ onTriggerConfetti, onRefreshPortfolio }) 
           </View>
         </View>
       </View>
-
-      {/* Simulator Chart Component */}
       <SimulatorChart sipAmount={sipAmount} borrowAmount={borrowAmount} years={years} />
-
-      {/* Quest Action Trigger */}
       <View style={styles.actionContainer}>
         <TouchableOpacity
           activeOpacity={0.8}

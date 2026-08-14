@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -28,10 +28,8 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
 
   const [saveAmountInput, setSaveAmountInput] = useState('50');
   const [borrowAmountInput, setBorrowAmountInput] = useState('5000');
-  
-  // Interactive action states (loading, success, error)
-  const [saveStatus, setSaveStatus] = useState({ state: 'idle', msg: '' }); // idle | loading | success
-  const [borrowStatus, setBorrowStatus] = useState({ state: 'idle', msg: '' }); // idle | loading | success | error
+  const [saveStatus, setSaveStatus] = useState({ state: 'idle', msg: '' });
+  const [borrowStatus, setBorrowStatus] = useState({ state: 'idle', msg: '' });
 
   useEffect(() => {
     fetchPortfolio();
@@ -51,28 +49,25 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
     setTimeout(async () => {
       try {
         const current = await loadPortfolio();
-        
-        // Add contribution to allocation ratios
+
         const addStocks = amount * 0.6514;
         const addFD = amount * 0.1450;
         const addGold = amount * 0.0875;
-        
+
         const updated = {
           ...current,
           balance: current.balance + amount,
           stocksAmount: current.stocksAmount + addStocks,
           fdAmount: current.fdAmount + addFD,
           goldAmount: current.goldAmount + addGold,
-          xp: current.xp + 20, // 20 XP for saving
+          xp: current.xp + 20,
         };
-
-        // Complete Catalyst quest if deposit is ₹21 or more
         if (amount >= 21) {
           const completed = await loadCompletedQuests();
           if (!completed.includes('first_deposit')) {
             const updatedQuests = [...completed, 'first_deposit'];
             await saveCompletedQuests(updatedQuests);
-            updated.xp += 80; // 80 XP quest reward
+            updated.xp += 80;
           }
         }
 
@@ -80,8 +75,6 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
         setPortfolio(updated);
         setSaveStatus({ state: 'success', msg: `Successfully deposited ₹${amount}!` });
         onTriggerConfetti();
-
-        // Reset status after a delay
         setTimeout(() => {
           setSaveStatus({ state: 'idle', msg: '' });
         }, 2000);
@@ -97,7 +90,7 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
     if (isNaN(amount) || amount <= 0) return;
 
     const creditLimit = Math.max(0, portfolio.balance * 0.9 - portfolio.borrowedAmount);
-    
+
     if (amount > creditLimit) {
       setBorrowStatus({
         state: 'error',
@@ -114,7 +107,7 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
         const updated = {
           ...current,
           borrowedAmount: current.borrowedAmount + amount,
-          xp: current.xp + 30, // 30 XP for smart leverage
+          xp: current.xp + 30,
         };
 
         await savePortfolio(updated);
@@ -144,12 +137,10 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
       try {
         const current = await loadPortfolio();
         const repayAmount = current.borrowedAmount;
-        
-        // Deduct from total balance as repayment (assuming simple repayment simulation)
         const updated = {
           ...current,
           balance: Math.max(0, current.balance - repayAmount),
-          stocksAmount: Math.max(0, current.stocksAmount - repayAmount * 0.65), // Deduct values
+          stocksAmount: Math.max(0, current.stocksAmount - repayAmount * 0.65),
           borrowedAmount: 0,
           xp: current.xp + 40,
         };
@@ -169,7 +160,6 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
     }, 1200);
   };
 
-  // Math metrics
   const creditLimit = Math.max(0, portfolio.balance * 0.9 - portfolio.borrowedAmount);
   const userLevel = Math.floor(portfolio.xp / 100) + 1;
   const levelProgress = (portfolio.xp % 100) / 100;
@@ -180,13 +170,10 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {/* Title Header */}
       <View style={styles.header}>
         <Text style={styles.title}>My Portfolio</Text>
         <Text style={styles.subtitle}>Liquid wealth statistics and instant credit line.</Text>
       </View>
-
-      {/* Main Wealth Account Card */}
       <View style={styles.wealthCard}>
         <View style={styles.levelRow}>
           <Text style={styles.levelBadge}>Level {userLevel} Saver</Text>
@@ -218,20 +205,14 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
           </View>
         </View>
       </View>
-
-      {/* Allocation breakdown */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Asset Allocation</Text>
-        
-        {/* Visual Stacked Bar */}
         <View style={styles.allocationBar}>
           <View style={[styles.allocSegment, { flex: 65, backgroundColor: COLORS.save }]} />
           <View style={[styles.allocSegment, { flex: 15, backgroundColor: COLORS.grow }]} />
           <View style={[styles.allocSegment, { flex: 9, backgroundColor: COLORS.accentGold }]} />
           <View style={[styles.allocSegment, { flex: 11, backgroundColor: COLORS.textMuted }]} />
         </View>
-
-        {/* Allocation list details */}
         <View style={styles.allocDetailsGrid}>
           <View style={styles.allocItem}>
             <View style={[styles.allocIndicator, { backgroundColor: COLORS.save }]} />
@@ -265,12 +246,10 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
           </View>
         </View>
       </View>
-
-      {/* Quick Deposit Actions */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Quick Auto-Save</Text>
         <Text style={styles.cardSubtitle}>Invest spare capital instantly and keep growing.</Text>
-        
+
         {saveStatus.state === 'loading' ? (
           <View style={styles.centerStatus}>
             <ActivityIndicator color={COLORS.primary} size="small" />
@@ -316,8 +295,6 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
           </View>
         )}
       </View>
-
-      {/* Quick Borrow Actions */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Instant Liquid Loan</Text>
         <Text style={styles.cardSubtitle}>Draw cash against your portfolio at 9.99% p.a.</Text>
@@ -355,8 +332,6 @@ export default function PortfolioTab({ onTriggerConfetti, refreshTrigger }) {
             {borrowStatus.state === 'error' && (
               <Text style={styles.errorText}>{borrowStatus.msg}</Text>
             )}
-
-            {/* Repay Loan button if active borrowed amount exists */}
             {portfolio.borrowedAmount > 0 && (
               <TouchableOpacity
                 activeOpacity={0.8}

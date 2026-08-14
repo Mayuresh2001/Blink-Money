@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -7,40 +6,29 @@ import Animated, {
 import { COLORS } from '../theme/colors';
 
 export default function SimulatorChart({ sipAmount, borrowAmount, years }) {
-  // Math logic
   const monthlyContribution = sipAmount * 30.5;
   const totalMonths = years * 12;
-  const monthlyRate = 0.12 / 12; // 12% p.a.
-  
-  // Future Value of SIP
-  // FV = P * ((1 + r)^n - 1) / r * (1 + r)
+  const monthlyRate = 0.12 / 12;
+
   const compoundMultiplier = (Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate * (1 + monthlyRate);
   const blinkAssetValue = monthlyContribution * compoundMultiplier;
   const totalPrincipal = monthlyContribution * totalMonths;
-  
-  // Loan Cost in Blink Way (9.99% p.a. simple interest over duration)
+
   const loanCost = borrowAmount * 0.0999 * years;
   const blinkNetValue = Math.max(0, blinkAssetValue - loanCost);
-  
-  // Liquidate Way (User sells asset value equal to borrowAmount early, e.g. at Month 12)
-  // Loss of compound growth on that borrow amount for the remaining years
-  // Loss = BorrowAmount * (1.12)^remaining_years
+
   const remainingYears = Math.max(0, years - 1);
   const lostCompounding = borrowAmount * Math.pow(1 + 0.12, remainingYears);
-  
-  // Liquidate Way Asset Value = Full SIP Growth - Lost Compounding Value
+
   const liquidateAssetValue = Math.max(0, blinkAssetValue - lostCompounding);
-  
-  // Opportunity Cost (Blink Net Benefit)
+
   const blinkBenefit = Math.max(0, blinkNetValue - liquidateAssetValue);
 
-  // Animation percentages for the bar heights
   const maxVal = Math.max(blinkAssetValue, blinkNetValue, liquidateAssetValue) || 1;
   const blinkHeightPct = (blinkNetValue / maxVal) * 100;
   const liquidateHeightPct = (liquidateAssetValue / maxVal) * 100;
   const lostCompoundingHeightPct = ((lostCompounding) / maxVal) * 100;
 
-  // Reanimated style for columns
   const blinkColumnStyle = useAnimatedStyle(() => {
     return {
       height: withTiming(`${blinkHeightPct}%`, { duration: 300 }),
@@ -65,7 +53,6 @@ export default function SimulatorChart({ sipAmount, borrowAmount, years }) {
 
   return (
     <View style={styles.container}>
-      {/* Metrics Row */}
       <View style={styles.metricsRow}>
         <View style={styles.metricBox}>
           <Text style={styles.metricLabel}>Total Invested</Text>
@@ -84,20 +71,14 @@ export default function SimulatorChart({ sipAmount, borrowAmount, years }) {
           </Text>
         </View>
       </View>
-
-      {/* Chart Layout */}
       <View style={styles.chartContainer}>
-        {/* Y Axis line */}
         <View style={styles.chartBackground}>
           <View style={styles.gridLine} />
           <View style={styles.gridLine} />
           <View style={styles.gridLine} />
           <View style={styles.gridLine} />
         </View>
-
-        {/* Columns Area */}
         <View style={styles.columnsWrapper}>
-          {/* Column 1: Blink Way */}
           <View style={styles.columnContainer}>
             <View style={styles.columnBarWrapper}>
               <Animated.View style={[styles.bar, styles.blinkBar, blinkColumnStyle]}>
@@ -108,11 +89,8 @@ export default function SimulatorChart({ sipAmount, borrowAmount, years }) {
             <Text style={styles.columnLabel}>Blink Way</Text>
             <Text style={styles.columnSubLabel}>Loan against Assets</Text>
           </View>
-
-          {/* Column 2: Liquidate Way */}
           <View style={styles.columnContainer}>
             <View style={styles.columnBarWrapper}>
-              {/* Lost compounding indicator on top of the liquidated bar */}
               <Animated.View style={[styles.bar, styles.liquidateBar, liquidateColumnStyle]}>
                 <Text style={styles.barLabel}>{formatCurrency(liquidateAssetValue)}</Text>
               </Animated.View>
@@ -122,8 +100,6 @@ export default function SimulatorChart({ sipAmount, borrowAmount, years }) {
           </View>
         </View>
       </View>
-
-      {/* Insight Banner */}
       <View style={styles.insightBanner}>
         <Text style={styles.insightEmoji}>💡</Text>
         <View style={styles.insightTextContent}>

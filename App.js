@@ -5,7 +5,6 @@ import { COLORS } from './src/theme/colors';
 import PortfolioTab from './src/screens/PortfolioTab';
 import SimulatorTab from './src/screens/SimulatorTab';
 import QuestsTab from './src/screens/QuestsTab';
-import ShareTab from './src/screens/ShareTab';
 import Confetti from './src/components/Confetti';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -47,13 +46,6 @@ export default function App() {
       case 'quests':
         return (
           <QuestsTab
-            onTriggerConfetti={triggerConfetti}
-            onRefreshPortfolio={handleRefreshData}
-          />
-        );
-      case 'share':
-        return (
-          <ShareTab
             onTriggerConfetti={triggerConfetti}
             onRefreshPortfolio={handleRefreshData}
           />
