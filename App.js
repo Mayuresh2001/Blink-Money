@@ -1,17 +1,23 @@
-import { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from 'react-native';
-import { COLORS } from './src/theme/colors';
-import PortfolioTab from './src/screens/PortfolioTab';
-import SimulatorTab from './src/screens/SimulatorTab';
-import QuestsTab from './src/screens/QuestsTab';
-import Confetti from './src/components/Confetti';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from "react";
+import { StatusBar } from "expo-status-bar";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { COLORS } from "./src/theme/colors";
+import PortfolioTab from "./src/screens/PortfolioTab";
+import SimulatorTab from "./src/screens/SimulatorTab";
+import QuestsTab from "./src/screens/QuestsTab";
+import Confetti from "./src/components/Confetti";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('portfolio');
+  const [activeTab, setActiveTab] = useState("portfolio");
   const [confettiTrigger, setConfettiTrigger] = useState(0);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
 
@@ -24,26 +30,26 @@ export default function App() {
   };
 
   const handleNavigateToQuests = () => {
-    setActiveTab('quests');
+    setActiveTab("quests");
   };
 
   const renderActiveScreen = () => {
     switch (activeTab) {
-      case 'portfolio':
+      case "portfolio":
         return (
           <PortfolioTab
             onTriggerConfetti={triggerConfetti}
             refreshTrigger={refreshTrigger}
           />
         );
-      case 'simulator':
+      case "simulator":
         return (
           <SimulatorTab
             onTriggerConfetti={triggerConfetti}
             onRefreshPortfolio={handleRefreshData}
           />
         );
-      case 'quests':
+      case "quests":
         return (
           <QuestsTab
             onTriggerConfetti={triggerConfetti}
@@ -80,51 +86,62 @@ export default function App() {
           <Text style={styles.streakBadgeText}>🔥 Quests</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.screenArea}>
-        {renderActiveScreen()}
-      </View>
+      <View style={styles.screenArea}>{renderActiveScreen()}</View>
       <View style={styles.tabBar}>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => setActiveTab('portfolio')}
-          style={[styles.tabItem, activeTab === 'portfolio' && styles.tabItemActive]}
+          onPress={() => setActiveTab("portfolio")}
+          style={[
+            styles.tabItem,
+            activeTab === "portfolio" && styles.tabItemActive,
+          ]}
         >
           <Text style={styles.tabIcon}>💰</Text>
-          <Text style={[styles.tabLabel, activeTab === 'portfolio' && styles.tabLabelActive]}>
+          <Text
+            style={[
+              styles.tabLabel,
+              activeTab === "portfolio" && styles.tabLabelActive,
+            ]}
+          >
             Portfolio
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => setActiveTab('simulator')}
-          style={[styles.tabItem, activeTab === 'simulator' && styles.tabItemActive]}
+          onPress={() => setActiveTab("simulator")}
+          style={[
+            styles.tabItem,
+            activeTab === "simulator" && styles.tabItemActive,
+          ]}
         >
           <Text style={styles.tabIcon}>🔄</Text>
-          <Text style={[styles.tabLabel, activeTab === 'simulator' && styles.tabLabelActive]}>
+          <Text
+            style={[
+              styles.tabLabel,
+              activeTab === "simulator" && styles.tabLabelActive,
+            ]}
+          >
             Blink Loop
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => setActiveTab('quests')}
-          style={[styles.tabItem, activeTab === 'quests' && styles.tabItemActive]}
+          onPress={() => setActiveTab("quests")}
+          style={[
+            styles.tabItem,
+            activeTab === "quests" && styles.tabItemActive,
+          ]}
         >
           <Text style={styles.tabIcon}>🎁</Text>
-          <Text style={[styles.tabLabel, activeTab === 'quests' && styles.tabLabelActive]}>
+          <Text
+            style={[
+              styles.tabLabel,
+              activeTab === "quests" && styles.tabLabelActive,
+            ]}
+          >
             Quests
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => setActiveTab('share')}
-          style={[styles.tabItem, activeTab === 'share' && styles.tabItemActive]}
-        >
-          <Text style={styles.tabIcon}>📣</Text>
-          <Text style={[styles.tabLabel, activeTab === 'share' && styles.tabLabelActive]}>
-            Share
           </Text>
         </TouchableOpacity>
       </View>
@@ -139,9 +156,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   topHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
@@ -149,16 +166,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   logoCircle: {
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: 'rgba(159, 232, 112, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(159, 232, 112, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 8,
   },
   logoInner: {
@@ -169,7 +186,7 @@ const styles = StyleSheet.create({
   },
   logoText: {
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: "900",
     color: COLORS.white,
     letterSpacing: -0.5,
   },
@@ -184,22 +201,22 @@ const styles = StyleSheet.create({
   streakBadgeText: {
     color: COLORS.text,
     fontSize: 10,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   screenArea: {
     flex: 1,
-    marginBottom: 38
+    marginBottom: 38,
   },
   tabBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'rgba(21, 34, 16, 0.95)',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "rgba(21, 34, 16, 0.95)",
     borderTopWidth: 1,
     borderTopColor: COLORS.cardBorder,
     paddingVertical: 8,
     paddingBottom: 12,
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
@@ -212,8 +229,8 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   tabItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 4,
     width: width / 4 - 10,
     borderRadius: 12,
@@ -229,7 +246,7 @@ const styles = StyleSheet.create({
   tabLabel: {
     color: COLORS.textSecondary,
     fontSize: 9,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   tabLabelActive: {
     color: COLORS.primary,
